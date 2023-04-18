@@ -1,0 +1,21 @@
+<?php
+// Define the path to the CSV file
+$path = '/path/to/your/output.csv';
+
+// Open the CSV file for reading
+$fp = fopen($path, 'r');
+
+// Output an HTML table with the contents of the CSV file
+echo '<table>';
+while ($row = fgetcsv($fp)) {
+    echo '<tr>';
+    foreach ($row as $cell) {
+        echo '<td>'.$cell.'</td>';
+    }
+    echo '</tr>';
+}
+echo '</table>';
+
+// Close the file handle
+fclose($fp);
+?>
