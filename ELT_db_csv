@@ -1,0 +1,46 @@
+<?php
+// Define the Oracle database connection details
+$hostname = 'your_hostname';
+$username = 'your_username';
+$password = 'your_password';
+$database = 'your_database';
+
+// Define the path for the CSV file
+$path = '/path/to/your/output.csv';
+
+// Connect to the Oracle database
+$conn = oci_connect($username, $password, $hostname.'/'.$database);
+if (!$conn) {
+    $error = oci_error();
+    die('Could not connect to Oracle database: '.$error['message']);
+}
+
+// Define the SQL query to extract the data
+$sql = 'SELECT * FROM your_table';
+
+// Prepare the SQL statement for execution
+$stmt = oci_parse($conn, $sql);
+if (!$stmt) {
+    $error = oci_error($conn);
+    die('Could not prepare SQL statement: '.$error['message']);
+}
+
+// Execute the SQL statement
+if (!oci_execute($stmt)) {
+    $error = oci_error($stmt);
+    die('Could not execute SQL statement: '.$error['message']);
+}
+
+// Open a file handle for writing the CSV output
+$fp = fopen($path, 'w');
+
+// Loop through the query results and output them to the CSV file
+while ($row = oci_fetch_assoc($stmt)) {
+    fputcsv($fp, $row);
+}
+
+// Close the file handle and free the Oracle resources
+fclose($fp);
+oci_free_statement($stmt);
+oci_close($conn);
+?>
